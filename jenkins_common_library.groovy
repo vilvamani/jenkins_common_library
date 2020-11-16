@@ -26,14 +26,14 @@ def checkOutSCM(configs) {
         }
     }
 
-    stage("Read Author") {
+    getCommitId(configs)
+}
+
+def getCommitId(configs) {
+    stage("Read Author Details") {
         dir(configs.branch_checkout_dir) {
-            git_commit = sh label: 'get last commit',
-            returnStdout: true,
-            script: 'git rev-parse --short HEAD~0'
-            author_email = sh label: 'get last commit',
-            returnStdout: true,
-            script: 'git log -1 --pretty=format:"%ae"'
+            git_commit = sh label: 'get last commit', returnStdout: true, script: 'git rev-parse --short HEAD~0'
+            configs.put("git_commit_id", git_commit_id)
         }
     }
 }
