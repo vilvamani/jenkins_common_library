@@ -200,8 +200,7 @@ def deployToKubernetes(configs) {
     dir(configs.branch_checkout_dir) {
         withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
-        writeFile file: './deployment.yaml', text: libraryResource("https://raw.githubusercontent.com/vilvamani/springboot/master/infra/k8s-deployment.yaml")
-        echo "${configs.kubeDeploymentFile} task defination file copied successfully"
+        writeFile file: './deployment.yaml', readFile(file: 'https://raw.githubusercontent.com/vilvamani/springboot/master/infra/k8s-deployment.yaml')
 
             sh """ sed -i 's/DOCKER_IMAGE/${configs.dockerImage}/g' ./deployment.yaml """
 
