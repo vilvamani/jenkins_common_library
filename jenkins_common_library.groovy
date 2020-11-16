@@ -8,8 +8,8 @@ def defaultConfigs(configs) {
     setDefault(configs, "branch_checkout_dir", 'kubeCred')
     setDefault(configs, "branch", 'develop')
     setDefault(configs, "sonarqube_credentials_id", 'sonarCred')
-    setDefault(configs, "dockerRegistry_credentials_id", 'dcokerRegistryCred')
-    setDefault(configs, "dockerRegistry_url", 'dcokerRegistryURL')
+    setDefault(configs, "docker_hub_credentials_id", 'dcokerHubCred')
+    setDefault(configs, "docker_hub_url", 'https://index.docker.io/v1/')
     setDefault(configs, "aws_credentials_id", 'awsJenkinsUserCred')
 }
 
@@ -117,7 +117,7 @@ def sonarQualityAnalysis(configs) {
 }
 
 def dockerize(configs) {
-    stage('Build docker image') {
+    stage('Build docker image!!!') {
         dir(configs.branch_checkout_dir) {
             def customImage = docker.build(configs.dockerRepoName + "/" + configs.dockerImageName + ":" + configs.git_commit_id)
 
@@ -125,6 +125,19 @@ def dockerize(configs) {
 
             return customImage
         }
+    }
+}
+
+def pushDockerImageToRepo(customImage, configs) {
+    if (configs.get('skip_docker_push', false)) {
+        echo "skip push docker image to docker repo"
+        return
+    }
+
+    // This step should not normally be used in your script. Consult the inline help for details.
+    withDockerRegistry(credentialsId: docker_hub_credentials_id, url: docker_hub_url) {
+        customImage.push("${configs.git_commit_id}")
+        customImage.push("latest")
     }
 }
 
