@@ -56,7 +56,7 @@ def getCommitId(configs) {
     stage("Read Author Details") {
         dir(configs.branch_checkout_dir) {
             git_commit_id = sh label: 'get last commit', returnStdout: true, script: 'git rev-parse --short HEAD~0'
-            configs.put("git_commit_id", git_commit_id)
+            configs.put("git_commit_id", git_commit_id.trim())
         }
     }
 }
