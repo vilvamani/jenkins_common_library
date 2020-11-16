@@ -6,11 +6,7 @@ def deployableBranch(branch) {
 
 def defaultConfigs(configs) {
     setDefault(configs, "branch_checkout_dir", 'kubeCred')
-    setDefault(configs, "branch", 'kubeCred')
-    setDefault(configs, "repo_url", 'kubeCred')
-    setDefault(configs, "unit_testing_skip", 'kubeCred')
-    setDefault(configs, "integration_tests_skip", 'kubeCred')
-    setDefault(configs, "sonar_skip", 'kubeCred')
+    setDefault(configs, "branch", 'develop')
     setDefault(configs, "sonarqube_credentials_id", 'sonarCred')
     setDefault(configs, "dockerRegistry_credentials_id", 'dcokerRegistryCred')
     setDefault(configs, "dockerRegistry_url", 'dcokerRegistryURL')
