@@ -1,5 +1,9 @@
 #!groovy
 
+def deployableBranch(branch) {
+    return (branch == "master") || (branch == "develop") || (branch =~ /^release\/.*/) || deployableBranch
+}
+
 def defaultConfigs(configs) {
     setDefault(configs, "k8s_credentials_id", 'kubeCred')
     setDefault(configs, "sonarqube_credentials_id", 'sonarCred')
@@ -15,11 +19,20 @@ def setDefault(configs, key, default_value) {
 }
 
 def checkOutSCM(configs) {
-    stage('GIT Checkout') {
+    stage('CheckoutBranch') {
         dir(configs.branch_checkout_dir) {
             echo "Git Checkout SCM!!!"
             git(url: configs.repo_url, branch:  configs.branch)
         }
+    }
+
+    stage("Read Author") {
+        git_commit = sh label: 'get last commit',
+        returnStdout: true,
+        script: 'git rev-parse --short HEAD~0'
+        author_email = sh label: 'get last commit',
+        returnStdout: true,
+        script: 'git log -1 --pretty=format:"%ae"'
     }
 }
 
