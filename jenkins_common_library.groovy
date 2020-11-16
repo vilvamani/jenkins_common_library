@@ -14,6 +14,15 @@ def setDefault(configs, key, default_value) {
     }
 }
 
+def checkOutSCM(configs) {
+    stage('GIT Checkout') {
+        dir(configs.branch_checkout_dir) {
+            echo "Git Checkout SCM!!!"
+            git(url: configs.repo_url, branch:  configs.branch)
+        }
+    }
+}
+
 def mavenUnitTests(configs) {
     stage('UnitTest') {
         if (configs.get('unittest_skip', false)) {
