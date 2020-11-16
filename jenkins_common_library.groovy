@@ -199,6 +199,9 @@ def deployToKubernetes(configs) {
         withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
             sh "kubectl apply -f ${configs.kubeDeploymentFile}"
             sh "kubectl apply -f ${configs.kubeServiceFile}"
+
+            sh "kubectl get pods"
+            sh "kubectl get svc"
         }
     }
 }
