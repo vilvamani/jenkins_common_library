@@ -203,7 +203,7 @@ def deployToKubernetes(configs) {
             //sh 'sed -i "s/DOCKER_IMAGE/${configs.dockerImage}/g" "${configs.kubeDeploymentFile}"'
 
         sh script: $/
-        sed -i "s/DOCKER_IMAGE/${configs.dockerImage}/" "${configs.kubeDeploymentFile}"
+        sed -i "s/DOCKER_IMAGE/${configs.dockerImage}/" configs.kubeDeploymentFile
         /$
 
             sh "kubectl apply -f ${configs.kubeDeploymentFile}"
