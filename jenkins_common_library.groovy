@@ -1,6 +1,8 @@
 #!groovy
 docker_hub_credentials_id = 'dockerHubCred'
 docker_hub_url = 'https://index.docker.io/v1/'
+kubernetes_credentials_id = 'KubeCred'
+kubernetes_url = 'https://kubernetes.default:443'
 
 def pushToRepositories(customImage, configs) {
     stage('Push to artifactory') {
@@ -9,6 +11,10 @@ def pushToRepositories(customImage, configs) {
 
     stage('Push Docker Image to Repo') {
         pushDockerImageToRepo(customImage, configs)
+    }
+    
+    stage("K8s Deployment") {
+        deployToKubernetes(configs)
     }
 }
 
@@ -176,6 +182,21 @@ def deployToArtifactory(configs) {
         echo "Deploy app to artifactory!!!"
         configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
             sh "mvn -s $MAVEN_SETTINGS clean deploy"
+        }
+    }
+}
+
+def deployToKubernetes(configs) {
+
+    if (configs.get('skip_kubernetes_deployment', false)) {
+        echo "skip kubernetes deployment!!!"
+        return
+    }
+                
+    dir(configs.branch_checkout_dir) { {
+        withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
+            sh "kubectl apply -f ${kubeDeploymentFile}"
+            sh "kubectl apply -f ${kubeServiceFile}"
         }
     }
 }
