@@ -121,7 +121,7 @@ def dockerize(configs) {
         dir(configs.branch_checkout_dir) {
             def customImage = docker.build(configs.dockerRepoName + "/" + configs.dockerImageName + ":" + configs.git_commit_id)
 
-            sh "docker tag ${configs.dockerRepoName} + "/" + ${configs.dockerImageName} +":" + ${configs.git_commit_id}"
+            sh "docker tag ${configs.dockerRepoName}/${configs.dockerImageName}:${configs.git_commit_id}"
 
             return customImage
         }
