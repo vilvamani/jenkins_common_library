@@ -200,8 +200,10 @@ def deployToKubernetes(configs) {
     dir(configs.branch_checkout_dir) {
         withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
+        writeFile file: './deployment.yaml', text: libraryResource("${configs.kubeDeploymentFile}")
+        echo "${configs.kubeDeploymentFile} task defination file copied successfully"
 
-            sh """ sed 's/DOCKER_IMAGE/${configs.dockerImage}/g' ${configs.kubeDeploymentFile} """
+            sh """ sed -i 's/DOCKER_IMAGE/${configs.dockerImage}/g' ./deployment.yaml """
 
             sh "kubectl apply -f ${configs.kubeDeploymentFile}"
             sh "kubectl apply -f ${configs.kubeServiceFile}"
