@@ -119,9 +119,9 @@ def sonarQualityAnalysis(configs) {
 def dockerize(configs) {
     stage('Build docker image') {
         dir(configs.branch_checkout_dir) {
-            def customImage = docker.build(configs.dockerRepoURL + "/" + configs.dockerImageName + ":" + configs.git_commit_id)
+            def customImage = docker.build(configs.dockerRepoName + "/" + configs.dockerImageName + ":" + configs.git_commit_id)
 
-            sh "docker tag ${configs.dockerRepoURL} + "/" + ${configs.dockerImageName} +":" + ${configs.git_commit_id}"
+            sh "docker tag ${configs.dockerRepoName} + "/" + ${configs.dockerImageName} +":" + ${configs.git_commit_id}"
 
             return customImage
         }
