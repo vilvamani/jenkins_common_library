@@ -39,7 +39,7 @@ def setDefault(configs, key, default_value) {
 
 def checkOutSCM(configs) {
     
-    stage('CheckoutBranch') {
+    stage('Checkout Branch') {
         dir(configs.branch_checkout_dir) {
             echo "Git Checkout SCM!!!"
             git(url: configs.repo_url, branch:  configs.branch)
@@ -61,7 +61,7 @@ def getCommitId(configs) {
 
 def mavenUnitTests(configs) {
 
-    stage('UnitTest') {
+    stage('Unit Test') {
         if (configs.get('skip_unit_test', false)) {
             echo "skiping unit testing"
             return
@@ -107,7 +107,7 @@ def mavenBuild(configs) {
 
 def mavenIntegrationTests(configs) {
 
-    stage('IntegrationTest') {
+    stage('Integration Test') {
         if (configs.get('skip_integration_test', false)) {
             echo "skiping integration testing"
             return
