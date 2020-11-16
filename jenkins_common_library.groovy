@@ -193,7 +193,7 @@ def deployToKubernetes(configs) {
         return
     }
                 
-    dir(configs.branch_checkout_dir) { {
+    dir(configs.branch_checkout_dir) {
         withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
             sh "kubectl apply -f ${kubeDeploymentFile}"
             sh "kubectl apply -f ${kubeServiceFile}"
