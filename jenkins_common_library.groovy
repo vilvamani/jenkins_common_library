@@ -172,8 +172,11 @@ def deployToArtifactory(configs) {
         return
     }
 
-    configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
-        sh "mvn -s $MAVEN_SETTINGS clean deploy"
+    dir(configs.branch_checkout_dir) {
+        echo "Deploy app to artifactory!!!"
+        configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
+            sh "mvn -s $MAVEN_SETTINGS clean deploy"
+        }
     }
 }
 
