@@ -1,4 +1,6 @@
 #!groovy
+docker_hub_credentials_id = 'dcokerHubCred'
+docker_hub_url = 'https://index.docker.io/v1/'
 
 def pushToRepositories(customImage, configs) {
     stage('Push to artifactory') {
