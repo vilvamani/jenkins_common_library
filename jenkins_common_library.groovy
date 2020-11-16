@@ -204,9 +204,9 @@ def deployToKubernetes(configs) {
 
         print(valuesYaml)
 
-            sh """ sed -i 's/DOCKER_IMAGE/${configs.dockerImage}/g' ./deployment.yaml """
+            sh """ sed -i 's/DOCKER_IMAGE/${configs.dockerImage}/g' ${valuesYaml} """
 
-            sh "kubectl apply -f ./deployment.yaml"
+            sh "kubectl apply -f ${valuesYaml}"
             sh "kubectl apply -f ${configs.kubeServiceFile}"
 
             sh "kubectl get pods"
