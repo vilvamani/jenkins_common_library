@@ -200,7 +200,9 @@ def deployToKubernetes(configs) {
     dir(configs.branch_checkout_dir) {
         withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
-        writeYaml file: './deployment.yaml', readYaml(file: "${configs.kubeDeploymentFile}")
+        def valuesYaml = readYaml (file: "${configs.kubeDeploymentFile}")
+
+        print(valuesYaml)
 
             sh """ sed -i 's/DOCKER_IMAGE/${configs.dockerImage}/g' ./deployment.yaml """
 
