@@ -1,5 +1,15 @@
 #!groovy
 
+def pushToRepositories(customImage, configs) {
+    stage('Push to artifactory') {
+        deployToArtifactory(configs)
+    }
+
+    stage('Push Docker Image to Repo') {
+        pushDockerImageToRepo(customImage, configs)
+    }
+}
+
 def deployableBranch(branch) {
     return (branch == "master") || (branch == "develop") || (branch =~ /^release\/.*/) || deployableBranch
 }
@@ -20,6 +30,7 @@ def setDefault(configs, key, default_value) {
 }
 
 def checkOutSCM(configs) {
+    
     stage('CheckoutBranch') {
         dir(configs.branch_checkout_dir) {
             echo "Git Checkout SCM!!!"
@@ -31,6 +42,7 @@ def checkOutSCM(configs) {
 }
 
 def getCommitId(configs) {
+
     stage("Read Author Details") {
         dir(configs.branch_checkout_dir) {
             git_commit_id = sh label: 'get last commit', returnStdout: true, script: 'git rev-parse --short HEAD~0'
@@ -40,6 +52,7 @@ def getCommitId(configs) {
 }
 
 def mavenUnitTests(configs) {
+
     stage('UnitTest') {
         if (configs.get('skip_unit_test', false)) {
             echo "skiping unit testing"
@@ -57,6 +70,7 @@ def mavenUnitTests(configs) {
 }
 
 def mavenPublishTest(configs) {
+
     stage('Publish Result') {
         if (configs.get('skip_unit_test', false)) {
             echo "skiping publish result"
@@ -71,6 +85,7 @@ def mavenPublishTest(configs) {
 }
 
 def mavenBuild(configs) {
+
     stage('Build') {
         dir(configs.branch_checkout_dir) {
             echo "Maven Build!!!"
@@ -83,6 +98,7 @@ def mavenBuild(configs) {
 }
 
 def mavenIntegrationTests(configs) {
+
     stage('IntegrationTest') {
         if (configs.get('skip_integration_test', false)) {
             echo "skiping integration testing"
@@ -100,6 +116,7 @@ def mavenIntegrationTests(configs) {
 }
 
 def sonarQualityAnalysis(configs) {
+
     stage('SonarQube analysis') {
         if (configs.get('skip_sonar', false)) {
             echo "skiping SonarQube"
@@ -117,6 +134,7 @@ def sonarQualityAnalysis(configs) {
 }
 
 def dockerize(configs) {
+
     stage('Build docker image') {
         echo "Build Docker Image!!!"
         dir(configs.branch_checkout_dir) {
@@ -128,6 +146,7 @@ def dockerize(configs) {
 }
 
 def pushDockerImageToRepo(customImage, configs) {
+
     if (configs.get('skip_docker_push', false)) {
         echo "skip push docker image to docker repo"
         return
@@ -137,6 +156,21 @@ def pushDockerImageToRepo(customImage, configs) {
     withDockerRegistry(credentialsId: docker_hub_credentials_id, url: docker_hub_url) {
         customImage.push("${configs.git_commit_id}")
         customImage.push("latest")
+    }
+
+    // Remove dangling Docker images
+    sh "docker image prune --all --force"
+}
+
+def deployToArtifactory(configs) {
+
+    if (configs.get('skip_artifactory', false)) {
+        echo "skip deploy app to artifactory"
+        return
+    }
+
+    configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
+        sh "mvn -s $MAVEN_SETTINGS clean deploy"
     }
 }
 
