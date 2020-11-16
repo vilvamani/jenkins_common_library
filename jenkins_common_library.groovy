@@ -41,7 +41,7 @@ def getCommitId(configs) {
 
 def mavenUnitTests(configs) {
     stage('UnitTest') {
-        if (configs.get('unittest_skip', false)) {
+        if (configs.get('skip_unit_test', false)) {
             echo "skiping unit testing"
             return
         }
@@ -58,7 +58,7 @@ def mavenUnitTests(configs) {
 
 def mavenIntegrationTests(configs) {
     stage('IntegrationTest') {
-        if (configs.get('integrationtest_skip', false)) {
+        if (configs.get('skip_integration_test', false)) {
             echo "skiping integration testing"
             return
         }
@@ -75,7 +75,7 @@ def mavenIntegrationTests(configs) {
 
 def sonarQualityAnalysis(configs) {
     stage('SonarQube analysis') {
-        if (configs.get('sonar_skip', false)) {
+        if (configs.get('skip_sonar', false)) {
             echo "skiping SonarQube"
             return
         }
