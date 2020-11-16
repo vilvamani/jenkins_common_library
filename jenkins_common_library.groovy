@@ -127,9 +127,10 @@ def sonarQualityAnalysis(configs) {
         
         dir(configs.branch_checkout_dir) {
             echo "SonarQube Code Quality Analysis!!!"
-
-            configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
-                sh "mvn -s $MAVEN_SETTINGS verify sonar:sonar"
+            withSonarQubeEnv('SonarQube') {    
+                configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
+                    sh "mvn -s $MAVEN_SETTINGS verify sonar:sonar"
+                }
             }
         }
     }
