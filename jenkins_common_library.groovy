@@ -205,8 +205,9 @@ def deployToKubernetes(configs) {
             //sh "sed -i 's|DOCKER_TAG|${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
 
             sh "sed -i 's|DOCKER_IMAGE|${configs.dockerRepoName}/${configs.dockerImageName}:${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
-            //sh "sed -i 's|DOCKER_IMAGE|${configs.dockerImageName}|g' infra/k8s-deployment.yaml"
-            //sh "sed -i 's|DOCKER_TAG|${configs.git_commit_id}|g' infra/k8s-deployment.yaml"
+
+            sh "cat ${configs.kubeDeploymentFile}"
+
 
             sh "kubectl apply -f ${configs.kubeDeploymentFile}"
             sh "kubectl apply -f ${configs.kubeServiceFile}"
