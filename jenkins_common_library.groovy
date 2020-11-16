@@ -1,10 +1,12 @@
 #!groovy
 
-setDefault(configs, "k8s_credentials_id", 'kubeCred')
-setDefault(configs, "sonarqube_credentials_id", 'sonarCred')
-setDefault(configs, "dockerRegistry_credentials_id", 'dcokerRegistryCred')
-setDefault(configs, "dockerRegistry_url", 'dcokerRegistryURL')
-setDefault(configs, "aws_credentials_id", 'awsJenkinsUserCred')
+def defaultConfigs(configs) {
+    setDefault(configs, "k8s_credentials_id", 'kubeCred')
+    setDefault(configs, "sonarqube_credentials_id", 'sonarCred')
+    setDefault(configs, "dockerRegistry_credentials_id", 'dcokerRegistryCred')
+    setDefault(configs, "dockerRegistry_url", 'dcokerRegistryURL')
+    setDefault(configs, "aws_credentials_id", 'awsJenkinsUserCred')
+}
 
 def setDefault(configs, key, default_value) {
     if (configs.get(key) == null) {
