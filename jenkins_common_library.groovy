@@ -29,6 +29,8 @@ def defaultConfigs(configs) {
     setDefault(configs, "docker_hub_credentials_id", 'dockerHubCred')
     setDefault(configs, "docker_hub_url", 'https://index.docker.io/v1/')
     setDefault(configs, "aws_credentials_id", 'awsJenkinsUserCred')
+    setDefault(configs, "kubeDeploymentFile", './infra/k8s-deployment.yaml')
+    setDefault(configs, "kubeServiceFile", './infra/k8s-service.yaml')
 }
 
 def setDefault(configs, key, default_value) {
