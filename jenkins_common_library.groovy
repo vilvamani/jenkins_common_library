@@ -1,5 +1,7 @@
 #!groovy
 
+@Library('pipeline-library') _
+
 def defaultConfigs(configs) {
     setDefault(configs, "k8s_credentials_id", 'kubeCred')
     setDefault(configs, "sonarqube_credentials_id", 'sonarCred')
