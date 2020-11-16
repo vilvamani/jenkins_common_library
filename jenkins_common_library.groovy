@@ -56,6 +56,32 @@ def mavenUnitTests(configs) {
     }
 }
 
+def mavenPublishTest(configs) {
+    stage('Publish Result') {
+        if (configs.get('skip_unit_test', false)) {
+            echo "skiping publish result"
+            return
+        }
+
+        dir(configs.branch_checkout_dir) {
+            junit(allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml,' +'**/target/failsafe-reports/*.xml')
+            jacoco()
+        }
+    }
+}
+
+def mavenBuild(configs) {
+    stage('Build') {
+        dir(configs.branch_checkout_dir) {
+            echo "Maven Build!!!"
+
+            configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
+                sh "mvn -s $MAVEN_SETTINGS package -DskipTests -U -Dmaven.repo.local=$WORKSPACE"
+            }
+        }
+    }
+}
+
 def mavenIntegrationTests(configs) {
     stage('IntegrationTest') {
         if (configs.get('skip_integration_test', false)) {
@@ -67,7 +93,7 @@ def mavenIntegrationTests(configs) {
             echo "Maven Integration test!!!"
 
             configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
-                sh "mvn -s $MAVEN_SETTINGS test -Dtest=**IT"
+                sh "mvn -s $MAVEN_SETTINGS test -Dtest=*Test,*IT test"
             }
         }
     }
