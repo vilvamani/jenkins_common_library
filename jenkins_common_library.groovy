@@ -64,3 +64,5 @@ def sonarQualityAnalysis(configs) {
         }
     }
 }
+
+return this
