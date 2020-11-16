@@ -1,5 +1,5 @@
 #!groovy
-docker_hub_credentials_id = 'dcokerHubCred'
+docker_hub_credentials_id = 'dockerHubCred'
 docker_hub_url = 'https://index.docker.io/v1/'
 
 def pushToRepositories(customImage, configs) {
@@ -20,7 +20,7 @@ def defaultConfigs(configs) {
     setDefault(configs, "branch_checkout_dir", 'kubeCred')
     setDefault(configs, "branch", 'develop')
     setDefault(configs, "sonarqube_credentials_id", 'sonarCred')
-    setDefault(configs, "docker_hub_credentials_id", 'dcokerHubCred')
+    setDefault(configs, "docker_hub_credentials_id", 'dockerHubCred')
     setDefault(configs, "docker_hub_url", 'https://index.docker.io/v1/')
     setDefault(configs, "aws_credentials_id", 'awsJenkinsUserCred')
 }
