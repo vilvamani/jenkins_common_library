@@ -117,11 +117,10 @@ def sonarQualityAnalysis(configs) {
 }
 
 def dockerize(configs) {
-    stage('Build docker image!!!') {
+    stage('Build docker image') {
+        echo "Build Docker Image!!!"
         dir(configs.branch_checkout_dir) {
             def customImage = docker.build(configs.dockerRepoName + "/" + configs.dockerImageName)
-
-            sh "docker tag ${configs.dockerRepoName}/${configs.dockerImageName}:latest"
 
             return customImage
         }
