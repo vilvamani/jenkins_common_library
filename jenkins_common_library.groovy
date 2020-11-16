@@ -200,6 +200,8 @@ def deployToKubernetes(configs) {
     dir(configs.branch_checkout_dir) {
         withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
+            sh "sed -i 's|latest|test|g' infra/k8s-deployment.yaml"
+
             sh "kubectl apply -f ${configs.kubeDeploymentFile}"
             sh "kubectl apply -f ${configs.kubeServiceFile}"
 
