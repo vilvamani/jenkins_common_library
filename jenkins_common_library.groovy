@@ -200,11 +200,9 @@ def deployToKubernetes(configs) {
     dir(configs.branch_checkout_dir) {
         withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
-            //sh 'sed -i "s/DOCKER_IMAGE/${configs.dockerImage}/g" "${configs.kubeDeploymentFile}"'
+            //sh "sed -i 's/DOCKER_IMAGE/${configs.dockerImage}/g' ${configs.kubeDeploymentFile}"
 
-        sh script: $/
-        sed -i "s/DOCKER_IMAGE/${configs.dockerImage}/" configs.kubeDeploymentFile
-        /$
+            sh "sed -i \'s/DOCKER_IMAGE/${configs.dockerImage}/g\' ${configs.kubeDeploymentFile}"
 
             sh "kubectl apply -f ${configs.kubeDeploymentFile}"
             sh "kubectl apply -f ${configs.kubeServiceFile}"
