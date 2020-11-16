@@ -151,7 +151,7 @@ def dockerize(configs) {
         dir(configs.branch_checkout_dir) {
             def customImage = docker.build(configs.dockerRepoName + "/" + configs.dockerImageName)
 
-            configs.put("dockerImage", "${configs.dockerRepoName}/${configs.dockerImageName}:${configs.git_commit_id}")
+            configs.put("dockerImage", customImage)
 
             return customImage
         }
@@ -200,7 +200,7 @@ def deployToKubernetes(configs) {
     dir(configs.branch_checkout_dir) {
         withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
-            sh "sed -i 's|latest|test|g' infra/k8s-deployment.yaml"
+            sh "sed -i 's|{DOCKER_IMAGE}|${configs.dockerRepoName}/${configs.dockerImageName}:${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
 
             sh "kubectl apply -f ${configs.kubeDeploymentFile}"
             sh "kubectl apply -f ${configs.kubeServiceFile}"
