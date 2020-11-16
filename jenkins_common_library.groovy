@@ -201,7 +201,8 @@ def deployToKubernetes(configs) {
         withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
             sh "sed -i 's|DOCKER_REPO|${configs.dockerRepoName}|g' ${configs.kubeDeploymentFile}"
-            sh "sed -i 's|DOCKER_IMAGE|${configs.dockerImageName}|g' infra/k8s-deployment.yaml"
+            sh "sed -i 's|DOCKER_IMAGE|${configs.dockerImageName}|g' ${configs.kubeDeploymentFile}"
+            sh "sed -i 's|DOCKER_TAG|${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
 
             //sh "sed -i 's|DOCKER_REPO|${configs.dockerRepoName}|g' infra/k8s-deployment.yaml"
             //sh "sed -i 's|DOCKER_IMAGE|${configs.dockerImageName}|g' infra/k8s-deployment.yaml"
