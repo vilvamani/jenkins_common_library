@@ -215,9 +215,6 @@ def deployToKubernetes(configs) {
 
             sh "sed -i 's|DOCKER_IMAGE|${configs.dockerRepoName}/${configs.dockerImageName}:${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
 
-            sh "cat ${configs.kubeDeploymentFile}"
-
-
             sh "kubectl apply -f ${configs.kubeDeploymentFile}"
             sh "kubectl apply -f ${configs.kubeServiceFile}"
 
