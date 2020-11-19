@@ -3,19 +3,31 @@ docker_hub_credentials_id = 'dockerHubCred'
 docker_hub_url = 'https://index.docker.io/v1/'
 kubernetes_credentials_id = 'KubeCred'
 kubernetes_url = 'https://kubernetes.default:443'
+sonarqube_credentials_id = 'sonarCred'
 
-def pushToRepositories(customImage, configs) {
+
+def mavenSpingBootBuild(configs) {
+
+    checkOutSCM(params)
+    mavenUnitTests(params)
+    mavenIntegrationTests(params)
+    mavenPublishTest(params)
+    mavenBuild(params)
+    sonarQualityAnalysis(params)
+    dockerImage = jenkinsLibrary.dockerize(params)
+
     stage('Push to artifactory') {
         deployToArtifactory(configs)
     }
 
     stage('Push Docker Image to Repo') {
-        pushDockerImageToRepo(customImage, configs)
+        pushDockerImageToRepo(dockerImage, configs)
     }
     
     stage("K8s Deployment") {
         deployToKubernetes(configs)
     }
+
 }
 
 def deployableBranch(branch) {
@@ -23,11 +35,12 @@ def deployableBranch(branch) {
 }
 
 def defaultConfigs(configs) {
-    setDefault(configs, "branch_checkout_dir", 'kubeCred')
+    setDefault(configs, "branch_checkout_dir", 'service')
     setDefault(configs, "branch", 'develop')
-    setDefault(configs, "sonarqube_credentials_id", 'sonarCred')
-    setDefault(configs, "docker_hub_credentials_id", 'dockerHubCred')
-    setDefault(configs, "docker_hub_url", 'https://index.docker.io/v1/')
+    setDefault(configs, "sonarqube_credentials_id", sonarqube_credentials_id)
+    setDefault(configs, "docker_hub_credentials_id", docker_hub_credentials_id)
+    setDefault(configs, "docker_hub_url", docker_hub_url)
+    setDefault(configs, "kubernetes_credentials_id", kubernetes_credentials_id)
     setDefault(configs, "aws_credentials_id", 'awsJenkinsUserCred')
     setDefault(configs, "kubeDeploymentFile", './infra/k8s-deployment.yaml')
     setDefault(configs, "kubeServiceFile", './infra/k8s-service.yaml')
