@@ -14,6 +14,7 @@ def mavenSpingBootBuild(configs) {
     mavenPublishTest(params)
     mavenBuild(params)
     sonarQualityAnalysis(params)
+    owsapDependancyCheck(params)
     dockerImage = jenkinsLibrary.dockerize(params)
 
     stage('Push to artifactory') {
@@ -154,6 +155,13 @@ def sonarQualityAnalysis(configs) {
                 }
             }
         }
+    }
+}
+
+def owsapDependancyCheck(configs) {
+    stage("OWASP Dependancy Check"){
+        dependencyCheck additionalArguments: '', odcInstallation: 'owasp'
+        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
     }
 }
 
