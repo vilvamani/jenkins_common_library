@@ -251,7 +251,9 @@ def pythonFlaskBuild(configs) {
 
 def pythonUnitTests(configs) {
     stage("Python UnitTest") {
-        sh "pip3 install -r requirements.txt"
+        dir(configs.branch_checkout_dir) {
+            sh "pip3 install -r requirements.txt"
+        }
     }
 }
 
