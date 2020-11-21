@@ -211,7 +211,7 @@ def deployToKubernetes(configs) {
     }
                 
     dir(configs.branch_checkout_dir) {
-        withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
+        //withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
             sh "sed -i 's|DOCKER_IMAGE|${configs.dockerRepoName}/${configs.dockerImageName}:${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
 
@@ -220,7 +220,7 @@ def deployToKubernetes(configs) {
 
             sh "kubectl get pods"
             sh "kubectl get svc"
-        }
+        //}
     }
 }
 
