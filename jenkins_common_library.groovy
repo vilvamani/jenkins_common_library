@@ -232,4 +232,27 @@ def deployToKubernetes(configs) {
     }
 }
 
+/////////////////////////////////////
+/////////// Python Build ///////////
+/////////////////////////////////////
+
+def pythonFlaskBuild(configs) {
+
+    checkOutSCM(params)
+    pythonUnitTests(params)
+    sonarQualityAnalysis(params)
+    owsapDependancyCheck(params)
+    dockerImage = jenkinsLibrary.dockerize(params)
+
+    stage('Push Docker Image to Repo') {
+        pushDockerImageToRepo(dockerImage, configs)
+    }
+}
+
+def pythonUnitTests(configs) {
+    stage("Python UnitTest") {
+        sh "pip3 install -r requirements.txt"
+    }
+}
+
 return this
