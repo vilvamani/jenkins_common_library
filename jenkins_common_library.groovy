@@ -276,12 +276,12 @@ def getCommitSha() {
 def updateGithubCommitStatus(build) {
   // workaround https://issues.jenkins-ci.org/browse/JENKINS-38674
   repoUrl = getRepoURL()
-  commitSha = getCommitSha()
+  COMMITSHA = getCommitSha()
 
   print("=====")
-  print(commitSha)
+  print(COMMITSHA)
 
-sh label: '', script: '''curl \\"https://api.GitHub.com/repos/vilvamani/springboot/statuses/6b21b896b6f190cb14b373b2f2ccfc71b5bbe694?access_token=977bb18a34d16cde7beb1c12be288bdf8b04cadb\\" \\
+sh label: '', script: '''curl \\"https://api.GitHub.com/repos/vilvamani/springboot/statuses/$COMMITSHA?access_token=977bb18a34d16cde7beb1c12be288bdf8b04cadb\\" \\
   -H "Content-Type: application/json" \\
   -X POST \\
   -d "{\\"state\\": \\"success\\",\\"context\\": \\"continuous-integration/jenkins\\", \\"description\\": \\"Jenkins\\", \\"target_url\\": \\"http://10.0.212.76:30001/job/springboot-ms/$BUILD_NUMBER/console\\"}"'''
