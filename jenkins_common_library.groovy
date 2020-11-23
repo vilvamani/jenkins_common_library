@@ -247,6 +247,14 @@ def deployToKubernetes(configs) {
                 //sh "kubectl get pods"
                 //sh "kubectl get svc"
             //}
+
+        	DEPLOYMENT = sh (
+          		script: "cat ${configs.kubeDeploymentFile} | yq r - metadata.name",
+          		returnStdout: true
+        	).trim()
+        	echo "Creating k8s resources..."
+
+            print(DEPLOYMENT)
         }
     }
 }
