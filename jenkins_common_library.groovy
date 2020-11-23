@@ -4,7 +4,7 @@ docker_hub_url = 'https://index.docker.io/v1/'
 kubernetes_credentials_id = 'KubeCred'
 kubernetes_url = 'https://kubernetes.default:443'
 sonarqube_credentials_id = 'sonarCred'
-
+jenkins_slack_channel = "infra-development"
 
 def mavenSpingBootBuild(configs) {
 
@@ -44,7 +44,6 @@ def defaultConfigs(configs) {
     setDefault(configs, "aws_credentials_id", 'awsJenkinsUserCred')
     setDefault(configs, "kubeDeploymentFile", './infra/k8s-deployment.yaml')
     setDefault(configs, "kubeServiceFile", './infra/k8s-service.yaml')
-    setDefault(configs, "jenkins_slack_channel", 'infra-deployment')
 }
 
 def setDefault(configs, key, default_value) {
