@@ -206,7 +206,7 @@ def pushDockerImageToRepo(customImage, configs) {
     }
 
     // Remove dangling Docker images
-    sh "docker image prune --all --force"
+    //sh "docker image prune --all --force"
 }
 
 def deployToArtifactory(configs) {
