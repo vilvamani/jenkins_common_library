@@ -278,10 +278,11 @@ def updateGithubCommitStatus(build) {
   repoUrl = getRepoURL()
   commitSha = getCommitSha()
 
-sh \" curl \"https://api.GitHub.com/repos/vilvamani/springboot/statuses/$commitSha?access_token=5204897a651d3248bcc005e6f946b7204d6a39e5\" \
+sh " curl "https://api.GitHub.com/repos/vilvamani/springboot/statuses/$commitSha?access_token=5204897a651d3248bcc005e6f946b7204d6a39e5" \
   -H "Content-Type: application/json" \
   -X POST \
-  -d "{\"state\": \"success\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"http://10.0.212.76:30001/job/springboot-ms/$BUILD_NUMBER/console\"}"\"  
+  -d "{\"state\": \"success\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"http://10.0.212.76:30001/job/springboot-ms/$BUILD_NUMBER/console\"}""
+  
 }
 
 return this
