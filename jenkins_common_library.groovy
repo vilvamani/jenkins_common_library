@@ -18,7 +18,7 @@ def mavenSpingBootBuild(configs) {
     mavenBuild(params)
     sonarQualityAnalysis(params)
     owsapDependancyCheck(params)
-    dockerImage = jenkinsLibrary.dockerize(params)
+    dockerImage = dockerize(params)
 
     stage('Push to artifactory') {
         deployToArtifactory(configs)
@@ -272,7 +272,7 @@ def pythonFlaskBuild(configs) {
     pythonUnitTests(params)
     sonarQualityAnalysis(params)
     owsapDependancyCheck(params)
-    dockerImage = jenkinsLibrary.dockerize(params)
+    dockerImage = dockerize(params)
 
     stage('Push Docker Image to Repo') {
         pushDockerImageToRepo(dockerImage, configs)
