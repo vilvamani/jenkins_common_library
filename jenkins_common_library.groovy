@@ -283,7 +283,7 @@ def updateGithubCommitStatus(build) {
 
 bitbucket_api_url = "https://api.GitHub.com/repos/vilvamani/springboot/statuses/$GIT_COMMIT?access_token=5204897a651d3248bcc005e6f946b7204d6a39e5" 
 sh "curl $bitbucket_api_url \
-  -H "Content-Type: application/json" \
+  -H \"Content-Type: application/json\" \
   -X POST \
   -d "{\"state\": \"success\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"http://10.0.212.76:30001/job/springboot-ms/$BUILD_NUMBER/console\"}""
 
