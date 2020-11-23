@@ -164,6 +164,11 @@ def sonarQualityAnalysis(configs) {
 
 def owsapDependancyCheck(configs) {
     stage("OWASP Dependancy Check"){
+        if (configs.get('skip_owasp', false)) {
+            echo "skiping SonarQube"
+            return
+        }
+
         dir(configs.branch_checkout_dir) {
             dependencyCheck additionalArguments: '', odcInstallation: 'owasp'
             dependencyCheckPublisher pattern: 'dependency-check-report.xml'
