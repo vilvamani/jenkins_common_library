@@ -28,9 +28,7 @@ def mavenSpingBootBuild(configs) {
         pushDockerImageToRepo(dockerImage, configs)
     }
     
-    stage("K8s Deployment") {
-        deployToKubernetes(configs)
-    }
+    deployToKubernetes(configs)
 }
 
 def deployableBranch(branch) {
@@ -226,22 +224,38 @@ def deployToArtifactory(configs) {
 
 def deployToKubernetes(configs) {
 
-    if (configs.get('skip_kubernetes_deployment', false)) {
-        echo "skip kubernetes deployment!!!"
-        return
-    }
-                
-    dir(configs.branch_checkout_dir) {
-        //withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
+    stage("Deploy to Dev Environment") {
 
-            sh "sed -i 's|DOCKER_IMAGE|${configs.dockerRepoName}/${configs.dockerImageName}:${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
+        if (configs.get('skip_kubernetes_deployment', false)) {
+            echo "skip kubernetes deployment!!!"
+            return
+        }
+                    
+        dir(configs.branch_checkout_dir) {
+            //withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
-            sh "kubectl apply -f ${configs.kubeDeploymentFile}"
-            sh "kubectl apply -f ${configs.kubeServiceFile}"
+                sh "sed -i 's|IMAGE|${configs.dockerRepoName}/${configs.dockerImageName}:${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
+                sh "sed -i 's|ENVIRONMENT|dev|g' ${configs.kubeDeploymentFile}"
+                sh "sed -i 's|BUILD_NUMBER|${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
 
-            sh "kubectl get pods"
-            sh "kubectl get svc"
-        //}
+                sh "sed -i 's|ENVIRONMENT|dev|g' ${configs.kubeServiceFile}"
+                sh "sed -i 's|BUILD_NUMBER|${configs.git_commit_id}|g' ${configs.kubeServiceFile}"
+
+                sh "kubectl apply -f ${configs.kubeDeploymentFile}"
+                sh "kubectl apply -f ${configs.kubeServiceFile}"
+
+                //sh "kubectl get pods"
+                //sh "kubectl get svc"
+            //}
+
+        	DEPLOYMENT = sh (
+          		script: "cat ${configs.kubeDeploymentFile} | yq -r .metadata.name",
+          		returnStdout: true
+        	).trim()
+        	echo "Creating k8s resources..."
+
+            print(DEPLOYMENT)
+        }
     }
 }
 
