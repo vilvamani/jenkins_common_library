@@ -44,6 +44,7 @@ def defaultConfigs(configs) {
     setDefault(configs, "aws_credentials_id", 'awsJenkinsUserCred')
     setDefault(configs, "kubeDeploymentFile", './infra/k8s-deployment.yaml')
     setDefault(configs, "kubeServiceFile", './infra/k8s-service.yaml')
+    setDefault(configs, "jenkins_slack_channel", 'infra-deployment')
 }
 
 def setDefault(configs, key, default_value) {
@@ -229,6 +230,28 @@ def deployToKubernetes(configs) {
             sh "kubectl get svc"
         //}
     }
+}
+
+////////////////////////////////////////////////
+/////////// Send Slack Notification ////////////
+////////////////////////////////////////////////
+
+def sendToSlack(color, status, service, channel, branch) {
+    log('sendToSlack: service', service)
+    log('sendToSlack: channel', channel)
+    log('sendToSlack: branch', branch)
+    log('sendToSlack: color', color)
+    log('sendToSlack: status', status)
+
+    slackSend(
+            color: color,
+            channel: channel,
+            message: "Status: ${status} " +
+                    "(<${env.BUILD_URL}|Open>)\n" +
+                    "Service: `${service}`\n" +
+                    "Branch: `${branch}`\n" +
+                    "Build number: `#${env.BUILD_NUMBER}`\n"
+    )
 }
 
 /////////////////////////////////////
