@@ -260,14 +260,14 @@ def pythonUnitTests(configs) {
 }
 
 def getRepoURL() {
-    dir(configs.branch_checkout_dir) {
+    dir('service') {
         sh "git config --get remote.origin.url > .git/remote-url"
         return readFile(".git/remote-url").trim()
     }
 }
 
 def getCommitSha() {
-    dir(configs.branch_checkout_dir) {
+    dir('service') {
         sh "git rev-parse HEAD > .git/current-commit"
         return readFile(".git/current-commit").trim()
     }
