@@ -166,8 +166,6 @@ def owsapDependancyCheck(configs) {
     stage("OWASP Dependancy Check"){
         dir(configs.branch_checkout_dir) {
             dependencyCheck additionalArguments: '', odcInstallation: 'owasp'
-
-            sh "ls -l target"
             dependencyCheckPublisher pattern: 'dependency-check-report.xml'
         }
     }
