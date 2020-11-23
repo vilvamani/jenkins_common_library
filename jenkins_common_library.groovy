@@ -4,7 +4,10 @@ docker_hub_url = 'https://index.docker.io/v1/'
 kubernetes_credentials_id = 'KubeCred'
 kubernetes_url = 'https://kubernetes.default:443'
 sonarqube_credentials_id = 'sonarCred'
-jenkins_slack_channel = "infra-development"
+
+colorBlue = '#0000FF'
+colorGreen = '#00FF00'
+colorRed = '#FF0000'
 
 def mavenSpingBootBuild(configs) {
 
@@ -44,6 +47,7 @@ def defaultConfigs(configs) {
     setDefault(configs, "aws_credentials_id", 'awsJenkinsUserCred')
     setDefault(configs, "kubeDeploymentFile", './infra/k8s-deployment.yaml')
     setDefault(configs, "kubeServiceFile", './infra/k8s-service.yaml')
+    setDefault(configs, "jenkins_slack_channel", 'jenkins')
 }
 
 def setDefault(configs, key, default_value) {
@@ -234,6 +238,16 @@ def deployToKubernetes(configs) {
 ////////////////////////////////////////////////
 /////////// Send Slack Notification ////////////
 ////////////////////////////////////////////////
+
+def sendSlack(config) {
+    if (currentBuild.result == null) {
+        currentBuild.result = 'SUCCESS'
+        
+        sendToSlack(colorGreen, "SUCCESS", 'springboot', config.jenkins_slack_channel, config.branch)
+    } else if (currentBuild.result = 'FAILURE') {
+        sendToSlack(colorRed, "FAILURE", 'springboot', config.jenkins_slack_channel, config.branch)
+    }
+}
 
 def sendToSlack(color, status, service, channel, branch) {
 
