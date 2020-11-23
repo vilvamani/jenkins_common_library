@@ -242,9 +242,9 @@ def deployToKubernetes(configs) {
 def sendSlack(config) {
     if (currentBuild.result == null) {
         currentBuild.result = 'SUCCESS'
-        
+
         sendToSlack(colorGreen, "SUCCESS", 'springboot', config.jenkins_slack_channel, config.branch)
-    } else if (currentBuild.result = 'FAILURE') {
+    } else if (currentBuild.result == 'FAILURE') {
         sendToSlack(colorRed, "FAILURE", 'springboot', config.jenkins_slack_channel, config.branch)
     }
 }
