@@ -180,6 +180,8 @@ def dockerize(configs) {
 
             configs.put("dockerImage", customImage)
 
+            currentBuild.displayName = "#" + (currentBuild.number + "-${configs.git_commit_id}")
+
             return customImage
         }
     }
@@ -254,18 +256,18 @@ def sendSlack(configs) {
     if (currentBuild.result != 'FAILURE') {
         currentBuild.result = 'SUCCESS'
         if (isBackToNormal()) {
-            sendToSlack(colorBlue, "BACK TO NORMAL", configs.service, configs.jenkins_slack_channel, configs.branch)
+            sendToSlack(configs, colorBlue, "BACK TO NORMAL", configs.service, configs.jenkins_slack_channel, configs.branch)
         } else {
-            sendToSlack(colorGreen, "SUCCESS", configs.service, configs.jenkins_slack_channel, configs.branch)
+            sendToSlack(configs, colorGreen, "SUCCESS", configs.service, configs.jenkins_slack_channel, configs.branch)
         }
     } else if (currentBuild.result == 'FAILURE') {
-        sendToSlack(colorRed, "FAILURE", configs.service, configs.jenkins_slack_channel, configs.branch)
+        sendToSlack(configs, colorRed, "FAILURE", configs.service, configs.jenkins_slack_channel, configs.branch)
     }
 }
 
-def sendToSlack(color, status, service, channel, branch) {
+def sendToSlack(configs, color, status, service, channel, branch) {
 
-    currentBuild.displayName = "#" + (currentBuild.number + ' - ' + currentBuild.result)
+    currentBuild.displayName = "#" + (currentBuild.number + "-${configs.git_commit_id}-" + currentBuild.result)
 
     slackSend(
             color: color,
