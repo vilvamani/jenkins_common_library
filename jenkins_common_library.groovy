@@ -278,23 +278,11 @@ def updateGithubCommitStatus(build) {
   repoUrl = getRepoURL()
   commitSha = getCommitSha()
 
-  print("*****************")
-  print(repoUrl)
+curl "https://api.GitHub.com/repos/vilvamani/springboot/statuses/$commitSha?access_token=5204897a651d3248bcc005e6f946b7204d6a39e5" \
+  -H "Content-Type: application/json" \
+  -X POST \
+  -d "{\"state\": \"success\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"http://10.0.212.76:30001/job/springboot-ms/$BUILD_NUMBER/console\"}"
 
-  step([
-    $class: 'GitHubCommitStatusSetter',
-    reposSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl],
-    commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commitSha],
-    errorHandlers: [[$class: 'ShallowAnyErrorHandler']],
-    statusResultSource: [
-      $class: 'ConditionalStatusResultSource',
-      results: [
-        [$class: 'BetterThanOrEqualBuildResult', result: 'SUCCESS', state: 'SUCCESS', message: build.description],
-        [$class: 'BetterThanOrEqualBuildResult', result: 'FAILURE', state: 'FAILURE', message: build.description],
-        [$class: 'AnyBuildResult', state: 'FAILURE', message: 'Loophole']
-      ]
-    ]
-  ])
 }
 
 return this
