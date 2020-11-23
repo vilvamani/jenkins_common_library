@@ -278,6 +278,9 @@ def updateGithubCommitStatus(build) {
   repoUrl = getRepoURL()
   commitSha = getCommitSha()
 
+  print("*****************")
+  print(repoUrl)
+
   step([
     $class: 'GitHubCommitStatusSetter',
     reposSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl],
