@@ -164,10 +164,12 @@ def sonarQualityAnalysis(configs) {
 
 def owsapDependancyCheck(configs) {
     stage("OWASP Dependancy Check"){
-        dependencyCheck additionalArguments: '', odcInstallation: 'owasp'
+        dir(configs.branch_checkout_dir) {
+            dependencyCheck additionalArguments: '', odcInstallation: 'owasp'
 
-        sh "ls -l"
-        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+            sh "ls -l"
+            dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        }
     }
 }
 
