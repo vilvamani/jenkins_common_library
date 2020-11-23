@@ -285,7 +285,7 @@ bitbucket_api_url = "https://api.GitHub.com/repos/vilvamani/springboot/statuses/
 sh "curl $bitbucket_api_url \
   -H \"Content-Type: application/json\" \
   -X POST \
-  -d "{\"state\": \"success\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"http://10.0.212.76:30001/job/springboot-ms/$BUILD_NUMBER/console\"}""
+  -d \"{\"state\": \"success\",\"context\": \"continuous-integration/jenkins\", \"description\": \"Jenkins\", \"target_url\": \"http://10.0.212.76:30001/job/springboot-ms/$BUILD_NUMBER/console\"}\""
 
 
 }
