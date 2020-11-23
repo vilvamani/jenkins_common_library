@@ -237,11 +237,6 @@ def deployToKubernetes(configs) {
 ////////////////////////////////////////////////
 
 def sendToSlack(color, status, service, channel, branch) {
-    log('sendToSlack: service', service)
-    log('sendToSlack: channel', channel)
-    log('sendToSlack: branch', branch)
-    log('sendToSlack: color', color)
-    log('sendToSlack: status', status)
 
     slackSend(
             color: color,
