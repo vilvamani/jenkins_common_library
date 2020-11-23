@@ -249,7 +249,11 @@ def sendSlack(configs) {
         return
     }
 
-    if (currentBuild.result == null) {
+    print("======================")
+
+    print(currentBuild.result)
+
+    if (currentBuild.result != 'FAILURE') {
         currentBuild.result = 'SUCCESS'
         if (isBackToNormal()) {
             sendToSlack(colorBlue, "BACK TO NORMAL", configs.service, configs.jenkins_slack_channel, configs.branch)
