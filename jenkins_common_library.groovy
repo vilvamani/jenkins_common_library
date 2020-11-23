@@ -254,7 +254,24 @@ def deployToKubernetes(configs) {
         	).trim()
         	echo "Creating k8s resources..."
 
-            print(DEPLOYMENT)
+            sleep 180
+            
+        	DESIRED= sh (
+          		script: "kubectl get deployment/$DEPLOYMENT | awk '{print \$2}' | grep -v DESIRED",
+          		returnStdout: true
+         	).trim()
+        	CURRENT= sh (
+          		script: "kubectl get deployment/$DEPLOYMENT | awk '{print \$3}' | grep -v CURRENT",
+          		returnStdout: true
+         	).trim()
+        	if (DESIRED.equals(CURRENT)) {
+          		currentBuild.result = "SUCCESS"
+          		return
+        	} else {
+          		error("Deployment Unsuccessful.")
+          		currentBuild.result = "FAILURE"
+          		return
+        	}
         }
     }
 }
