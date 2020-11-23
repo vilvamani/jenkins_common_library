@@ -254,8 +254,8 @@ def deployToKubernetes(configs) {
         	).trim()
         	echo "Creating k8s resources..."
 
-            sleep 180
-            
+            sleep 120
+
         	DESIRED= sh (
           		script: "kubectl get deployment/$DEPLOYMENT | awk '{print \$2}' | grep -v DESIRED",
           		returnStdout: true
