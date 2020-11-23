@@ -39,6 +39,7 @@ def deployableBranch(branch) {
 
 def defaultConfigs(configs) {
     setDefault(configs, "branch_checkout_dir", 'service')
+    setDefault(configs, "service", 'micro-service')
     setDefault(configs, "branch", 'develop')
     setDefault(configs, "sonarqube_credentials_id", sonarqube_credentials_id)
     setDefault(configs, "docker_hub_credentials_id", docker_hub_credentials_id)
@@ -238,14 +239,25 @@ def deployToKubernetes(configs) {
 ////////////////////////////////////////////////
 /////////// Send Slack Notification ////////////
 ////////////////////////////////////////////////
+def isBackToNormal() {
+    return currentBuild?.previousBuild?.result != 'SUCCESS' && env.BUILD_NUMBER != 1
+}
 
 def sendSlack(config) {
+    if (configs.get('skip_notification', false)) {
+        echo "skip Slack Notification!!!"
+        return
+    }
+
     if (currentBuild.result == null) {
         currentBuild.result = 'SUCCESS'
-
-        sendToSlack(colorGreen, "SUCCESS", 'springboot', config.jenkins_slack_channel, config.branch)
+        if (isBackToNormal()) {
+            sendToSlack(colorBlue, "BACK TO NORMAL", config.service, config.jenkins_slack_channel, config.branch)
+        } else {
+            sendToSlack(colorGreen, "SUCCESS", config.service, config.jenkins_slack_channel, config.branch)
+        }
     } else if (currentBuild.result == 'FAILURE') {
-        sendToSlack(colorRed, "FAILURE", 'springboot', config.jenkins_slack_channel, config.branch)
+        sendToSlack(colorRed, "FAILURE", config.service, config.jenkins_slack_channel, config.branch)
     }
 }
 
