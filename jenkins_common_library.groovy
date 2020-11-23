@@ -251,10 +251,6 @@ def sendSlack(configs) {
         return
     }
 
-    print("======================")
-
-    print(currentBuild.result)
-
     if (currentBuild.result != 'FAILURE') {
         currentBuild.result = 'SUCCESS'
         if (isBackToNormal()) {
@@ -268,6 +264,8 @@ def sendSlack(configs) {
 }
 
 def sendToSlack(color, status, service, channel, branch) {
+
+    currentBuild.displayName = "#" + (currentBuild.number + ' - ' + currentBuild.result)
 
     slackSend(
             color: color,
