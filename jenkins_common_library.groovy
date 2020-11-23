@@ -243,7 +243,7 @@ def isBackToNormal() {
     return currentBuild?.previousBuild?.result != 'SUCCESS' && env.BUILD_NUMBER != 1
 }
 
-def sendSlack(config) {
+def sendSlack(configs) {
     if (configs.get('skip_notification', false)) {
         echo "skip Slack Notification!!!"
         return
@@ -252,12 +252,12 @@ def sendSlack(config) {
     if (currentBuild.result == null) {
         currentBuild.result = 'SUCCESS'
         if (isBackToNormal()) {
-            sendToSlack(colorBlue, "BACK TO NORMAL", config.service, config.jenkins_slack_channel, config.branch)
+            sendToSlack(colorBlue, "BACK TO NORMAL", configs.service, configs.jenkins_slack_channel, configs.branch)
         } else {
-            sendToSlack(colorGreen, "SUCCESS", config.service, config.jenkins_slack_channel, config.branch)
+            sendToSlack(colorGreen, "SUCCESS", configs.service, configs.jenkins_slack_channel, configs.branch)
         }
     } else if (currentBuild.result == 'FAILURE') {
-        sendToSlack(colorRed, "FAILURE", config.service, config.jenkins_slack_channel, config.branch)
+        sendToSlack(colorRed, "FAILURE", configs.service, configs.jenkins_slack_channel, configs.branch)
     }
 }
 
