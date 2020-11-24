@@ -79,7 +79,7 @@ def getCommitId(configs) {
 
 def mavenUnitTests(configs) {
 
-    stage('Unit Test') {
+    stage("Unit Test") {
         if (configs.get('skip_unit_test', false)) {
             echo "skiping unit testing"
             return
@@ -257,6 +257,56 @@ def deployToKubernetes(configs) {
     }
 }
 
+/////////////////////////////////////
+/////////// Python Build ////////////
+/////////////////////////////////////
+
+def pythonFlaskBuild(configs) {
+
+    checkOutSCM(params)
+    pythonUnitTests(params)
+    sonarQualityAnalysis(params)
+    owsapDependancyCheck(params)
+    dockerImage = dockerize(params)
+
+    stage('Push Docker Image to Repo') {
+        pushDockerImageToRepo(dockerImage, configs)
+    }
+}
+
+def pythonUnitTests(configs) {
+    stage("Unit Test") {
+        dir(configs.branch_checkout_dir) {
+            sh "pip3 install -r requirements.txt"
+        }
+    }
+}
+
+def getRepoURL() {
+    dir('service') {
+        sh "git config --get remote.origin.url > .git/remote-url"
+        return readFile(".git/remote-url").trim()
+    }
+}
+
+//////////////////////////////////////
+/////////// Angular Build ////////////
+//////////////////////////////////////
+def angularUnitTests(configs) {
+    stage("Unit Test") {
+        if (configs.get('skip_unit_test', false)) {
+            echo "skiping unit testing"
+            return
+        }
+
+        dir(configs.branch_checkout_dir) {
+            sh "npm install"
+            sh "npm test-headless"
+        }
+    }
+}
+
+
 ////////////////////////////////////////////////
 /////////// Send Slack Notification ////////////
 ////////////////////////////////////////////////
@@ -295,38 +345,6 @@ def sendToSlack(configs, color, status, service, channel, branch) {
                     "Branch: `${branch}`\n" +
                     "Build number: `#${env.BUILD_NUMBER}`\n"
     )
-}
-
-/////////////////////////////////////
-/////////// Python Build ////////////
-/////////////////////////////////////
-
-def pythonFlaskBuild(configs) {
-
-    checkOutSCM(params)
-    pythonUnitTests(params)
-    sonarQualityAnalysis(params)
-    owsapDependancyCheck(params)
-    dockerImage = dockerize(params)
-
-    stage('Push Docker Image to Repo') {
-        pushDockerImageToRepo(dockerImage, configs)
-    }
-}
-
-def pythonUnitTests(configs) {
-    stage("Python UnitTest") {
-        dir(configs.branch_checkout_dir) {
-            sh "pip3 install -r requirements.txt"
-        }
-    }
-}
-
-def getRepoURL() {
-    dir('service') {
-        sh "git config --get remote.origin.url > .git/remote-url"
-        return readFile(".git/remote-url").trim()
-    }
 }
 
 return this
