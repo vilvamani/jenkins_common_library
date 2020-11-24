@@ -294,10 +294,12 @@ def getRepoURL() {
 //////////////////////////////////////
 def installNodeModules(configs) {
     stage ('install modules'){
-        sh '''
-          npm install --verbose -d 
-          npm install --save classlist.js
-        '''
+        dir(configs.branch_checkout_dir) {
+            sh '''
+            npm install --verbose -d 
+            npm install --save classlist.js
+            '''
+        }
     }
 }
 
