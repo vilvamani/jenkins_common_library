@@ -293,7 +293,7 @@ def getRepoURL() {
 /////////// Angular Build ////////////
 //////////////////////////////////////
 def installNodeModules(configs) {
-    stage ('Install NPM Modules'){
+    stage ('Install Node Modules'){
         dir(configs.branch_checkout_dir) {
             sh '''
             npm install --verbose -d 
