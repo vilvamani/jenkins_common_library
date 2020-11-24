@@ -300,8 +300,8 @@ def angularUnitTests(configs) {
         }
 
         dir(configs.branch_checkout_dir) {
-            sh "npm install"
-            //sh "npm run test-headless"
+            sh "npm install -g"
+            sh "npm run test-headless"
         }
     }
 }
