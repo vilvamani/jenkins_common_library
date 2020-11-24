@@ -249,10 +249,8 @@ def pythonFlaskBuild(configs) {
     sonarQualityAnalysis(params)
     owsapDependancyCheck(params)
     dockerImage = dockerize(params)
-
-    stage('Push Docker Image to Repo') {
-        pushDockerImageToRepo(dockerImage, configs)
-    }
+    pushDockerImageToRepo(dockerImage, configs)
+    deployToKubernetes(configs)
 }
 
 def pythonUnitTests(configs) {
@@ -260,13 +258,6 @@ def pythonUnitTests(configs) {
         dir(configs.branch_checkout_dir) {
             sh "pip3 install -r requirements.txt"
         }
-    }
-}
-
-def getRepoURL() {
-    dir('service') {
-        sh "git config --get remote.origin.url > .git/remote-url"
-        return readFile(".git/remote-url").trim()
     }
 }
 
