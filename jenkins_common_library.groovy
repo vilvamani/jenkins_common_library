@@ -293,7 +293,7 @@ def getRepoURL() {
 /////////// Angular Build ////////////
 //////////////////////////////////////
 def installNodeModules(configs) {
-    stage ('install modules'){
+    stage ('Install NPM Modules'){
         dir(configs.branch_checkout_dir) {
             sh '''
             npm install --verbose -d 
@@ -326,7 +326,22 @@ def angularPublishTest(configs) {
 
         dir(configs.branch_checkout_dir) {
             junit(allowEmptyResults: true, testResults: 'test-results.xml')
-            jacoco()
+        }
+    }
+}
+
+def angularLint(configs) {
+    stage('Publish Result') {
+        dir(configs.branch_checkout_dir) {
+            sh 'ng lint'
+        }
+    }
+}
+
+def angularBuild(configs) {
+    stage('Angular Build') {
+        dir(configs.branch_checkout_dir) {
+            sh 'ng build --prod --build-optimizer'
         }
     }
 }
