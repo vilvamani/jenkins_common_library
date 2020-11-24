@@ -19,15 +19,8 @@ def mavenSpingBootBuild(configs) {
     sonarQualityAnalysis(params)
     owsapDependancyCheck(params)
     dockerImage = dockerize(params)
-
-    stage('Push to artifactory') {
-        deployToArtifactory(configs)
-    }
-
-    stage('Push Docker Image to Repo') {
-        pushDockerImageToRepo(dockerImage, configs)
-    }
-    
+    pushDockerImageToRepo(dockerImage, configs)
+    deployToArtifactory(configs)    
     deployToKubernetes(configs)
 }
 
@@ -191,33 +184,32 @@ def dockerize(configs) {
 }
 
 def pushDockerImageToRepo(customImage, configs) {
+    stage('Push Docker Image to Repo') {
+        if (configs.get('skip_docker_push', false)) {
+            echo "skip push docker image to docker repo"
+            return
+        }
 
-    if (configs.get('skip_docker_push', false)) {
-        echo "skip push docker image to docker repo"
-        return
+        // This step should not normally be used in your script. Consult the inline help for details.
+        withDockerRegistry(credentialsId: docker_hub_credentials_id, url: docker_hub_url) {
+            customImage.push("${configs.git_commit_id}")
+            customImage.push("latest")
+        }
     }
-
-    // This step should not normally be used in your script. Consult the inline help for details.
-    withDockerRegistry(credentialsId: docker_hub_credentials_id, url: docker_hub_url) {
-        customImage.push("${configs.git_commit_id}")
-        customImage.push("latest")
-    }
-
-    // Remove dangling Docker images
-    //sh "docker image prune --all --force"
 }
 
 def deployToArtifactory(configs) {
+    stage('Push to artifactory') {
+        if (configs.get('skip_artifactory', false)) {
+            echo "skip deploy app to artifactory"
+            return
+        }
 
-    if (configs.get('skip_artifactory', false)) {
-        echo "skip deploy app to artifactory"
-        return
-    }
-
-    dir(configs.branch_checkout_dir) {
-        echo "Deploy app to artifactory!!!"
-        configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
-            sh "mvn -s $MAVEN_SETTINGS clean deploy"
+        dir(configs.branch_checkout_dir) {
+            echo "Deploy app to artifactory!!!"
+            configFileProvider([configFile(fileId: '8b36a983-2cd4-4843-956f-f2f5f72efff4', variable: 'MAVEN_SETTINGS')]) {
+                sh "mvn -s $MAVEN_SETTINGS clean deploy"
+            }
         }
     }
 }
