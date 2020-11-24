@@ -325,7 +325,7 @@ def angularPublishTest(configs) {
         }
 
         dir(configs.branch_checkout_dir) {
-            junit(allowEmptyResults: true, testResults: 'test-results.xml')
+            junit(allowEmptyResults: true, testResults: "test-results.xml")
         }
     }
 }
