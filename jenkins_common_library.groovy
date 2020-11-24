@@ -292,6 +292,15 @@ def getRepoURL() {
 //////////////////////////////////////
 /////////// Angular Build ////////////
 //////////////////////////////////////
+def installNodeModules(configs) {
+    stage ('install modules'){
+        sh '''
+          npm install --verbose -d 
+          npm install --save classlist.js
+        '''
+    }
+}
+
 def angularUnitTests(configs) {
     stage("Unit Test") {
         if (configs.get('skip_unit_test', false)) {
@@ -300,7 +309,6 @@ def angularUnitTests(configs) {
         }
 
         dir(configs.branch_checkout_dir) {
-            sh "npm install"
             sh "npm run test-headless"
         }
     }
