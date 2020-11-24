@@ -273,6 +273,20 @@ def getRepoURL() {
 //////////////////////////////////////
 /////////// Angular Build ////////////
 //////////////////////////////////////
+
+def angularBuildAndDeploy(configs) {
+    checkOutSCM(params)
+    installNodeModules(params)
+    angularUnitTests(params)
+    angularPublishTest(params)
+    angularLint(params)
+    angularSonarQualityAnalysis(params)
+    angularBuild(params)
+    dockerImage = dockerize(params)
+    pushDockerImageToRepo(dockerImage, configs)  
+    deployToKubernetes(configs)
+}
+
 def installNodeModules(configs) {
     stage ('Install Node Modules'){
         dir(configs.branch_checkout_dir) {
@@ -293,6 +307,7 @@ def angularUnitTests(configs) {
 
         dir(configs.branch_checkout_dir) {
             sh "npm run test-headless"
+            sh "npm run code-coverage"
         }
     }
 }
@@ -306,9 +321,25 @@ def angularPublishTest(configs) {
         }
 
         dir(configs.branch_checkout_dir) {
-            sh "ls -l"
             junit "test-results.xml"
             //junit(allowEmptyResults: true, testResults: "./test-results.xml")
+        }
+    }
+}
+
+def angularSonarQualityAnalysis(configs) {
+
+    stage('SonarQube analysis') {
+        if (configs.get('skip_sonar', false)) {
+            echo "skiping SonarQube"
+            return
+        }
+        
+        dir(configs.branch_checkout_dir) {
+            echo "SonarQube Code Quality Analysis!!!"
+            withSonarQubeEnv('SonarQube') {    
+                sh "npm run sonar"
+            }
         }
     }
 }
