@@ -333,7 +333,7 @@ def angularPublishTest(configs) {
 def angularLint(configs) {
     stage('Publish Result') {
         dir(configs.branch_checkout_dir) {
-            sh 'ng lint'
+            sh 'npm run lint'
         }
     }
 }
@@ -341,7 +341,7 @@ def angularLint(configs) {
 def angularBuild(configs) {
     stage('Angular Build') {
         dir(configs.branch_checkout_dir) {
-            sh 'ng build --prod --build-optimizer'
+            sh 'npm run build'
         }
     }
 }
