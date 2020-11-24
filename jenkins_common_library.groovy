@@ -227,11 +227,6 @@ def deployToKubernetes(configs) {
             //withKubeConfig(credentialsId: kubernetes_credentials_id, serverUrl: kubernetes_url) {
 
                 sh "sed -i 's|IMAGE|${configs.dockerRepoName}/${configs.dockerImageName}:${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
-                sh "sed -i 's|ENVIRONMENT|dev|g' ${configs.kubeDeploymentFile}"
-                sh "sed -i 's|BUILD_NUMBER|${configs.git_commit_id}|g' ${configs.kubeDeploymentFile}"
-
-                sh "sed -i 's|ENVIRONMENT|dev|g' ${configs.kubeServiceFile}"
-                sh "sed -i 's|BUILD_NUMBER|${configs.git_commit_id}|g' ${configs.kubeServiceFile}"
 
                 sh "kubectl apply -f ${configs.kubeDeploymentFile}"
                 sh "kubectl apply -f ${configs.kubeServiceFile}"
