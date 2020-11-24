@@ -306,6 +306,20 @@ def angularUnitTests(configs) {
     }
 }
 
+def angularPublishTest(configs) {
+
+    stage('Publish Result') {
+        if (configs.get('skip_unit_test', false)) {
+            echo "skiping publish result"
+            return
+        }
+
+        dir(configs.branch_checkout_dir) {
+            junit(allowEmptyResults: true, testResults: 'test-results.xml')
+            jacoco()
+        }
+    }
+}
 
 ////////////////////////////////////////////////
 /////////// Send Slack Notification ////////////
