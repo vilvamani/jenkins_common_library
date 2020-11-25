@@ -154,7 +154,7 @@ def sonarQualityAnalysis(configs) {
 }
 
 def owsapDependancyCheck(configs) {
-    stage("OWASP Dependancy Check"){
+    stage("OWASP Security Check"){
         if (configs.get('skip_owasp', false)) {
             echo "skiping SonarQube"
             return
@@ -336,7 +336,7 @@ def angularSonarQualityAnalysis(configs) {
 }
 
 def angularLint(configs) {
-    stage('Publish Result') {
+    stage('Angular Lint Check') {
         dir(configs.branch_checkout_dir) {
             sh 'npm run lint'
         }
