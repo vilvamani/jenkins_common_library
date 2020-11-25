@@ -9,7 +9,7 @@ colorBlue = '#0000FF'
 colorGreen = '#00FF00'
 colorRed = '#FF0000'
 
-def mavenSpingBootBuild(configs) {
+def mavenSpringBootBuild(configs) {
 
     checkOutSCM(params)
     mavenUnitTests(params)
